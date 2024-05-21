@@ -1,6 +1,6 @@
 #include "Animal.h"
 
-Animal::Animal(int power, int health, Position position) : Organism(power, health, position)
+Animal::Animal(int power, int health, Position position, int birthTurn) : Organism(power, health, position, birthTurn)
 {
 	setMaxHealth(health + 3);
 	setSpecies("A");

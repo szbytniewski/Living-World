@@ -19,6 +19,8 @@ private:
 	bool isPositionOnWorld(int x, int y);
 	bool isPositionFree(Position position);
 
+	vector<Organism*> getAdjacentOrganisms(Position position);
+
 public:
 	World(int worldX, int worldY);
 	World() : World(6, 6) {};
@@ -33,6 +35,7 @@ public:
 	void addOrganism(Organism* organism);
 	vector<Position> getVectorOfFreePositionsAround(Position position);
 	void makeTurn();
+	void handleOrganismDeath(Organism& organism);
 
 	void writeWorld(string fileName);
 	void readWorld(string fileName);

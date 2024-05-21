@@ -1,7 +1,7 @@
 #include "Plant.h"
 #include <iostream>
 
-Plant::Plant(int power, int health, Position position) : Organism(power, health, position)
+Plant::Plant(int power, int health, Position position, int birthTurn) : Organism(power, health, position, birthTurn)
 {
 	setMaxHealth(health + 1);
 	setSpecies("P");

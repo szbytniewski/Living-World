@@ -17,11 +17,9 @@ void printMenu() {
 
 int main() {
     World world(10, 10); // Creating a world with dimensions 10x10
-    Organism organism(3, 2, { 1,1 });
-    Plant plant(3,2,{ 0,0 });
-    Animal animal(3, 2, { 8,8 });
+    Plant plant(3,2,{ 0,0 }, 0);
+    Animal animal(3, 2, { 1,2 }, 0);
 
-    world.addOrganism(&organism);
     world.addOrganism(&plant);
     world.addOrganism(&animal);
     bool exitGame = false;

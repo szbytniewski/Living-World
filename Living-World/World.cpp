@@ -74,21 +74,61 @@ void World::addOrganism(Organism* organism)
 
 void World::makeTurn()
 {
+	vector<Organism> newOrganisms;
 	vector<Position> newPositions;
 	int numberOfNewPositions;
 	int randomIndex;
 
 	srand(time(0));
 	for (auto& org : organisms) {
-		newPositions = getVectorOfFreePositionsAround(org.getPosition());
-		numberOfNewPositions = newPositions.size();
-		if (numberOfNewPositions > 0) {
-			randomIndex = rand() % numberOfNewPositions;
-			org.setPosition(newPositions[randomIndex]);
+		// Check if organism can reproduce
+		if (org.canReproduce()) {
+			Organism child = org.createChild(turn);
+			newOrganisms.push_back(child);
+			org.setHealth(1);
+		} else {
+			//Move Organism
+			newPositions = getVectorOfFreePositionsAround(org.getPosition());
+			numberOfNewPositions = newPositions.size();
+			if (numberOfNewPositions > 0) {
+				randomIndex = rand() % numberOfNewPositions;
+				org.setPosition(newPositions[randomIndex]);
+			}
+
+			//Regenerate Health
+			org.regenerateHealth();
 		}
+		
+		// Check if organism is dead
+		if (org.getHealth() <= 0) {
+			handleOrganismDeath(org);
+		}
+	
 	}
+
+	// Add new organisms to the world
+	for (auto& newOrg : newOrganisms) {
+		organisms.push_back(newOrg);
+	}
+
+	// Remove dead organisms from the world
+	organisms.erase(remove_if(organisms.begin(), organisms.end(),
+		[](Organism& org) { return org.getHealth() <= 0; }), organisms.end());
+
 	turn++;
 }
+
+void World::handleOrganismDeath(Organism& organism) {
+	for (auto& org : organisms) {
+		for (auto& ancestor : org.getAncestors()) {
+			if (ancestor.species == organism.getSpecies() && ancestor.deathTurn == -1) {
+				ancestor.deathTurn = getTurn();
+			}
+		}
+	}
+}
+
+
 
 void World::writeWorld(string fileName)
 {
@@ -165,7 +205,7 @@ void World::readWorld(string fileName)
 			species.resize(s_size);
 			my_file.read((char*)&species[0], s_size);
 
-			Organism org(power, health, pos);
+			Organism org(power, health, pos, this->turn);
 			org.setMaxHealth(maxHealth);
 			org.setSpecies(species);
 			new_organisms.push_back(org);
