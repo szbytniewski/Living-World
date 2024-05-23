@@ -6,17 +6,20 @@
 using namespace std;
 
 struct AncestorInfo {
+	int id;
 	int birthTurn;
 	int deathTurn; // Use -1 to indicate the ancestor is still alive
-	string species;
 
-	AncestorInfo(int birthTurn, int deathTurn, string species)
-		: birthTurn(birthTurn), deathTurn(deathTurn), species(species) {}
+
+	AncestorInfo(int id, int birthTurn, int deathTurn)
+		: id(id), birthTurn(birthTurn), deathTurn(deathTurn) {}
 };
 
 class Organism
 {
 private:
+	static int nextId; // Static member for generating unique IDs
+	int id;
 	int power;
 	int health;
 	int maxHealth;
@@ -28,7 +31,9 @@ private:
 public:
 	
 	Organism(int power, int health, Position position, int birthTurn); //values that you have to put when creating an object
-	Organism() : power(0), health(0), maxHealth(0), position(0, 0), species("O") {}; //default values
+	Organism() : power(0), health(0), maxHealth(0), position(0, 0), species("O"), id(nextId++) {}; //default values
+
+	int getId() const;
 
 	int getPower();
 	void setPower(int power);
@@ -44,8 +49,9 @@ public:
 	void setBirthTurn(int birthTurn);
 	vector<AncestorInfo>& getAncestors();
 
-	void addAncestor(int birthTurn, string species);
-	void updateAncestorDeathTurn(string species, int deathTurn);
+	void addAncestor(int id, int birthTurn);
+	void updateAncestorDeathTurn(int ancestorId, int deathTurn);
+	void propagateAncestorDeathTurn(int ancestorId, int deathTurn);
 	void regenerateHealth();
 	bool canReproduce();
 	Organism createChild(int birthTurn);

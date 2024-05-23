@@ -1,6 +1,8 @@
 #include "Organism.h"
 
-Organism::Organism(int power, int health, Position position, int birthTurn)
+int Organism::nextId = 0;
+
+Organism::Organism(int power, int health, Position position, int birthTurn) : id(nextId++)
 {
 	setPower(power);
 	setHealth(health);
@@ -8,6 +10,10 @@ Organism::Organism(int power, int health, Position position, int birthTurn)
 	setPosition(position);
 	setSpecies("O");
 	setBirthTurn(birthTurn);
+}
+
+int Organism::getId() const {
+	return id;
 }
 
 int Organism::getPower()
@@ -54,15 +60,23 @@ vector<AncestorInfo>& Organism::getAncestors() {
 	return this->ancestors;
 }
 
-void Organism::addAncestor(int birthTurn, string species) {
-	ancestors.push_back(AncestorInfo(birthTurn, -1, species));
+void Organism::addAncestor(int id, int birthTurn) {
+	ancestors.push_back(AncestorInfo(id, birthTurn, -1));
 }
 
-void Organism::updateAncestorDeathTurn(string species, int deathTurn) {
+void Organism::updateAncestorDeathTurn(int ancestorId, int deathTurn) {
 	for (auto& ancestor : ancestors) {
-		if (ancestor.species == species && ancestor.deathTurn == -1) {
+		if (ancestor.id == ancestorId && ancestor.deathTurn == -1) {
 			ancestor.deathTurn = deathTurn;
 			break;
+		}
+	}
+}
+
+void Organism::propagateAncestorDeathTurn(int ancestorId, int deathTurn) {
+	for (auto& ancestor : ancestors) {
+		if (ancestor.id == ancestorId && ancestor.deathTurn == -1) {
+			ancestor.deathTurn = deathTurn;
 		}
 	}
 }
@@ -84,12 +98,12 @@ Organism Organism::createChild(int birthTurn) {
 
 	// Add parent's ancestors to the child
 	for (const auto& ancestor : this->getAncestors()) {
-		child.addAncestor(ancestor.birthTurn, ancestor.species);
-		child.updateAncestorDeathTurn(ancestor.species, ancestor.deathTurn);
+		child.addAncestor(ancestor.id, ancestor.birthTurn);
+		child.updateAncestorDeathTurn(ancestor.id, ancestor.deathTurn);
 	}
 
 	// Add parent to child's ancestor list
-	child.addAncestor(this->getBirthTurn(), this->getSpecies());
+	child.addAncestor(this->getId(), this->getBirthTurn());
 
 	return child;
 }
@@ -103,8 +117,7 @@ string Organism::toString()
 		", position: " + getPosition().toString() +
 		", ancestors: [";
 	for (const auto& ancestor : ancestors) {
-		result += "{species: " + ancestor.species +
-			", birthTurn: " + to_string(ancestor.birthTurn) +
+		result += "{ birthTurn: " + to_string(ancestor.birthTurn) +
 			", deathTurn: " + (ancestor.deathTurn == -1 ? "alive" : to_string(ancestor.deathTurn)) + "}, ";
 	}
 	result += "]}";

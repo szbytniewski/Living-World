@@ -17,10 +17,12 @@ void printMenu() {
 
 int main() {
     World world(10, 10); // Creating a world with dimensions 10x10
-    Plant plant(3,2,{ 0,0 }, 0);
-    Animal animal(3, 2, { 1,2 }, 0);
+    Plant plant(0,6,{ 0,0 }, 0);
+    Plant plant2(0, 2, { 5,5 }, 0);
+    Animal animal(3, 2, { 2,1 }, 0);
 
     world.addOrganism(&plant);
+    world.addOrganism(&plant2);
     world.addOrganism(&animal);
     bool exitGame = false;
     std::cout << "World after turn:\n" << world.toString() << std::endl;

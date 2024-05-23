@@ -2,7 +2,7 @@
 
 Animal::Animal(int power, int health, Position position, int birthTurn) : Organism(power, health, position, birthTurn)
 {
-	setMaxHealth(health + 3);
+	setMaxHealth(10);
 	setSpecies("A");
 }
 

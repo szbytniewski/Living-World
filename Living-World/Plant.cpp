@@ -3,7 +3,7 @@
 
 Plant::Plant(int power, int health, Position position, int birthTurn) : Organism(power, health, position, birthTurn)
 {
-	setMaxHealth(health + 1);
+	setMaxHealth(6);
 	setSpecies("P");
 }
 
