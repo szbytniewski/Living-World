@@ -87,27 +87,6 @@ void Organism::regenerateHealth() {
 	}
 }
 
-bool Organism::canReproduce() {
-	return health == maxHealth || health > maxHealth;
-}
-
-Organism Organism::createChild(int birthTurn) {
-	Position childPosition = position; // Assuming child starts at the same position, you might want to handle this differently
-	Organism child(power, 1, childPosition, birthTurn); // Child starts with 1 health
-	child.setSpecies(species);
-
-	// Add parent's ancestors to the child
-	for (const auto& ancestor : this->getAncestors()) {
-		child.addAncestor(ancestor.id, ancestor.birthTurn);
-		child.updateAncestorDeathTurn(ancestor.id, ancestor.deathTurn);
-	}
-
-	// Add parent to child's ancestor list
-	child.addAncestor(this->getId(), this->getBirthTurn());
-
-	return child;
-}
-
 string Organism::toString()
 {
 	string result = "{ species: " + this->getSpecies() +
@@ -149,12 +128,3 @@ void Organism::setBirthTurn(int birthTurn)
 	this->birthTurn = birthTurn;
 }
 
-bool Organism::canAttack() {
-	return power > 0;
-}
-
-void Organism::attack(Organism& target) {
-	if (canAttack()) {
-		target.setHealth(target.getHealth() - power);
-	}
-}

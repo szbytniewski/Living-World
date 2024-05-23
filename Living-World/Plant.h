@@ -4,8 +4,8 @@
 class Plant : public Organism
 {
 public:
-	Plant(int power, int health, Position position, int birthTurn);
-	Plant();
+	Plant(int power, int health, Position position, int birthTurn, string species);
 
-	void move(int dx, int dy) override;
+
+	virtual ~Plant() = default;
 };

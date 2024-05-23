@@ -31,7 +31,7 @@ private:
 public:
 	
 	Organism(int power, int health, Position position, int birthTurn); //values that you have to put when creating an object
-	Organism() : power(0), health(0), maxHealth(0), position(0, 0), species("O"), id(nextId++) {}; //default values
+	virtual ~Organism() = default; // Virtual destructor
 
 	int getId() const;
 
@@ -53,11 +53,11 @@ public:
 	void updateAncestorDeathTurn(int ancestorId, int deathTurn);
 	void propagateAncestorDeathTurn(int ancestorId, int deathTurn);
 	void regenerateHealth();
-	bool canReproduce();
-	Organism createChild(int birthTurn);
+	virtual bool canReproduce() const = 0;
+	virtual Organism* createChild(int birthTurn) const = 0;
 
-	bool canAttack();
-	void attack(Organism& target);
+	virtual bool canAttack() const = 0;
+	virtual void attack(Organism& target) = 0; 
 
 
 	string toString();
