@@ -2,7 +2,7 @@
 
 int Organism::nextId = 0;
 
-Organism::Organism(int power, int health, Position position, int birthTurn) : id(nextId++)
+Organism::Organism(int power, int health, int maxHealth, Position position, int birthTurn, string species) : id(nextId++)
 {
 	setPower(power);
 	setHealth(health);
@@ -12,11 +12,12 @@ Organism::Organism(int power, int health, Position position, int birthTurn) : id
 	setBirthTurn(birthTurn);
 }
 
-int Organism::getId() const {
+int Organism::getId() const 
+{
 	return id;
 }
 
-int Organism::getPower()
+int Organism::getPower() const
 {
 	return this->power;
 }
@@ -26,7 +27,7 @@ void Organism::setPower(int power)
 	this->power = power;
 }
 
-int Organism::getHealth()
+int Organism::getHealth() const
 {
 	return this->health;
 }
@@ -36,7 +37,7 @@ void Organism::setHealth(int health)
 	this->health = health;
 }
 
-int Organism::getMaxHealth()
+int Organism::getMaxHealth() const
 {
 	return this->maxHealth;
 }
@@ -46,7 +47,7 @@ void Organism::setMaxHealth(int maxHealth)
 	this->maxHealth = maxHealth;
 }
 
-Position Organism::getPosition()
+Position Organism::getPosition() const
 {
 	return this->position;
 }
@@ -108,7 +109,7 @@ void Organism::move(int dx, int dy)
 	position.move(dx, dy);
 }
 
-string Organism::getSpecies()
+string Organism::getSpecies() const
 {
 	return this->species;
 }
@@ -118,7 +119,7 @@ void Organism::setSpecies(string spec)
 	this->species = spec;
 }
 
-int Organism::getBirthTurn()
+int Organism::getBirthTurn() const
 {
 	return this->birthTurn;
 }

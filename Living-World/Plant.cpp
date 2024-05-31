@@ -1,19 +1,9 @@
 #include "Plant.h"
-#include <iostream>
 
-Plant::Plant(int power, int health, Position position, int birthTurn) : Organism(power, health, position, birthTurn)
+Plant::Plant(int power, int health, int maxHealth, Position position, int birthTurn, string species) 
+	: Organism(power, health, maxHealth, position, birthTurn, species)
 {
 	setMaxHealth(6);
 	setSpecies("P");
 }
 
-Plant::Plant() : Organism()
-{
-	setMaxHealth(0);
-	setSpecies("P");
-}
-
-void Plant::move(int dx, int dy)
-{
-	Organism::move(0, 0);
-}

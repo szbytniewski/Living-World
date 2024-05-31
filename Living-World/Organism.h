@@ -30,22 +30,22 @@ private:
 
 public:
 	
-	Organism(int power, int health, Position position, int birthTurn); //values that you have to put when creating an object
+	Organism(int power, int health, int maxHealth, Position position, int birthTurn, string species); //values that you have to put when creating an object
 	virtual ~Organism() = default; // Virtual destructor
 
 	int getId() const;
 
-	int getPower();
+	int getPower() const;
 	void setPower(int power);
-	int getHealth();
+	int getHealth() const;
 	void setHealth(int health);
-	int getMaxHealth();
+	int getMaxHealth() const;
 	void setMaxHealth(int maxHealth);
-	Position getPosition();
+	Position getPosition() const;
 	void setPosition(Position position);
-	string getSpecies();
+	string getSpecies() const;
 	void setSpecies(string spec);
-	int getBirthTurn();
+	int getBirthTurn() const;
 	void setBirthTurn(int birthTurn);
 	vector<AncestorInfo>& getAncestors();
 
@@ -56,7 +56,7 @@ public:
 	virtual bool canReproduce() const = 0;
 	virtual Organism* createChild(int birthTurn) const = 0;
 
-	virtual bool canAttack() const = 0;
+	virtual bool canAttack();
 	virtual void attack(Organism& target) = 0; 
 
 
