@@ -1,13 +1,12 @@
 #pragma once
-#include "Animal.h"
+#include "Plant.h"
 
-class Sheep : public Animal {
+class Toadstool : public Plant {
 public:
-    Sheep(Position position, int birthTurn);
+    Toadstool(Position position, int birthTurn);
 
     bool canReproduce() const override;
     Organism* createChild(int birthTurn) const override;
-
     bool canAttack() const override;
     void attack(Organism& target) override;
 };

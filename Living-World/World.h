@@ -12,7 +12,7 @@ private:
 	int worldX;
 	int worldY;
 	int turn = 0;
-	vector<Organism> organisms;
+	vector<Organism*> organisms;
 	char separator = '.';
 
 	string getOrganismFromPosition(int x, int y);
@@ -23,7 +23,7 @@ private:
 
 public:
 	World(int worldX, int worldY);
-	World() : World(6, 6) {};
+	~World();
 
 	int getWorldX();
 	void setWorldX(int worldX);
@@ -35,10 +35,8 @@ public:
 	void addOrganism(Organism* organism);
 	vector<Position> getVectorOfFreePositionsAround(Position position);
 	void makeTurn();
-	void handleOrganismDeath(Organism& organism);
+	void handleOrganismDeath(Organism* organism);
 
-	void writeWorld(string fileName);
-	void readWorld(string fileName);
 	void printOrganismsInfo();
 
 	string toString();

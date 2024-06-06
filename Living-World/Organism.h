@@ -47,7 +47,9 @@ public:
 	void setSpecies(string spec);
 	int getBirthTurn() const;
 	void setBirthTurn(int birthTurn);
+
 	vector<AncestorInfo>& getAncestors();
+	const vector<AncestorInfo>& getAncestors() const;
 
 	void addAncestor(int id, int birthTurn);
 	void updateAncestorDeathTurn(int ancestorId, int deathTurn);
@@ -56,7 +58,7 @@ public:
 	virtual bool canReproduce() const = 0;
 	virtual Organism* createChild(int birthTurn) const = 0;
 
-	virtual bool canAttack();
+	virtual bool canAttack() const = 0;
 	virtual void attack(Organism& target) = 0; 
 
 

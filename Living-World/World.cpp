@@ -4,9 +4,9 @@
 
 string World::getOrganismFromPosition(int x, int y)
 {
-	for (Organism org : organisms)
-		if (org.getPosition().getX() == x && org.getPosition().getY() == y)
-			return org.getSpecies();
+	for (auto& org : organisms)
+		if (org->getPosition().getX() == x && org->getPosition().getY() == y)
+			return org->getSpecies();
 	return "";
 }
 
@@ -69,7 +69,7 @@ int World::getTurn()
 
 void World::addOrganism(Organism* organism)
 {
-	this->organisms.push_back(*organism);
+	this->organisms.push_back(organism);
 }
 
 vector<Organism*> World::getAdjacentOrganisms(Position position)
@@ -81,8 +81,8 @@ vector<Organism*> World::getAdjacentOrganisms(Position position)
 		for (int y = -1; y < 2; ++y) {
 			if ((x != 0 || y != 0) && isPositionOnWorld(pos_x + x, pos_y + y)) {
 				for (auto& organism : organisms) {
-					if (organism.getPosition().getX() == pos_x + x && organism.getPosition().getY() == pos_y + y) {
-						result.push_back(&organism);
+					if (organism->getPosition().getX() == pos_x + x && organism->getPosition().getY() == pos_y + y) {
+						result.push_back(organism);
 					}
 				}
 			}
@@ -91,26 +91,29 @@ vector<Organism*> World::getAdjacentOrganisms(Position position)
 	return result;
 }
 
-void World::handleOrganismDeath(Organism& organism) {
+void World::handleOrganismDeath(Organism* organism) {
 	// Mark the organism's death in its ancestors
-	organism.updateAncestorDeathTurn(organism.getId(), this->turn);
+	organism->updateAncestorDeathTurn(organism->getId(), this->turn);
 
 	// Propagate death information to all organisms
 	for (auto& org : organisms) {
-		org.propagateAncestorDeathTurn(organism.getId(), this->turn);
+		org->propagateAncestorDeathTurn(organism->getId(), this->turn);
 	}
 
 	// Remove the dead organism from the list
-	auto iter = std::remove_if(organisms.begin(), organisms.end(),
-		[&organism](const Organism& o) { return &o == &organism; });
-	organisms.erase(iter, organisms.end());
+	for (auto iter = organisms.begin(); iter != organisms.end(); ++iter) {
+		if (*iter == organism) {
+			organisms.erase(iter);
+			break;  // Exit the loop after removing the organism
+		}
+	}
 }
 
 
 void World::makeTurn()
 {
 	turn++;
-	vector<Organism> newOrganisms;
+	vector<Organism*> newOrganisms;
 	vector<Position> newPositions;
 	vector<int> organismsToRemove;
 	int numberOfNewPositions;
@@ -119,29 +122,28 @@ void World::makeTurn()
 	srand(time(0));
 	for (auto& org : organisms) {
 		// Check if organism can reproduce
-		if (org.canReproduce()) {
-			// Zmienic aby robil organizm tej samej klasy oraz dziecko musi sie insta ruszyc
-			Organism child = org.createChild(turn);
+		if (org->canReproduce()) {
+			Organism* child = org->createChild(turn);
 			newOrganisms.push_back(child);
-			org.setHealth(1);
+			org->setHealth(1);
 		} else {
 			//Regenerate Health
-			org.regenerateHealth();
+			org->regenerateHealth();
 
 			//Move Organism
-			newPositions = getVectorOfFreePositionsAround(org.getPosition());
+			newPositions = getVectorOfFreePositionsAround(org->getPosition());
 			numberOfNewPositions = newPositions.size();
 			if (numberOfNewPositions > 0) {
 				randomIndex = rand() % numberOfNewPositions;
-				org.setPosition(newPositions[randomIndex]);
+				org->setPosition(newPositions[randomIndex]);
 			}
 
-			vector<Organism*> adjacentOrganisms = getAdjacentOrganisms(org.getPosition());
+			vector<Organism*> adjacentOrganisms = getAdjacentOrganisms(org->getPosition());
 			for (auto& target : adjacentOrganisms) {
-				if (org.getSpecies() != target->getSpecies()) { // Check species
-					org.attack(*target);
+				if (org->getSpecies() != target->getSpecies()) { // Check species
+					org->attack(*target);
 					if (target->getHealth() <= 0) {
-						handleOrganismDeath(*target);
+						handleOrganismDeath(target);
 						organismsToRemove.push_back(1); // Store index for removal
 					}
 				}
@@ -149,7 +151,7 @@ void World::makeTurn()
 		}
 		
 		// Check if organism is dead
-		if (org.getHealth() <= 0) {
+		if (org->getHealth() <= 0) {
 			handleOrganismDeath(org);
 		}
 	
@@ -162,99 +164,14 @@ void World::makeTurn()
 
 	// Remove dead organisms from the world
 	organisms.erase(remove_if(organisms.begin(), organisms.end(),
-		[](Organism& org) { return org.getHealth() <= 0; }), organisms.end());
-}
-
-void World::writeWorld(string fileName)
-{
-	fstream my_file;
-	my_file.open(fileName, ios::out | ios::binary);
-	if (my_file.is_open()) {
-		my_file.write((char*)&this->worldX, sizeof(int));
-		my_file.write((char*)&this->worldY, sizeof(int));
-		my_file.write((char*)&this->turn, sizeof(int));
-		int orgs_size = this->organisms.size();
-		my_file.write((char*)&orgs_size, sizeof(int));
-		for (int i = 0; i < orgs_size; i++) {
-			int data;
-			data = this->organisms[i].getPower();
-			my_file.write((char*)&data, sizeof(int));
-			data = this->organisms[i].getHealth();
-			my_file.write((char*)&data, sizeof(int));
-			data = this->organisms[i].getMaxHealth();
-			my_file.write((char*)&data, sizeof(int));
-			data = this->organisms[i].getPosition().getX();
-			my_file.write((char*)&data, sizeof(int));
-			data = this->organisms[i].getPosition().getY();
-			my_file.write((char*)&data, sizeof(int));
-			string s_data = this->organisms[i].getSpecies();
-			int s_size = s_data.size();
-			my_file.write((char*)&s_size, sizeof(int));
-			my_file.write(s_data.data(), s_data.size());
-		}
-		my_file.close();
-	}
-}
-
-void World::readWorld(string fileName)
-{
-	fstream my_file;
-	my_file.open(fileName, ios::in | ios::binary);
-	if (my_file.is_open()) {
-		int result;
-		my_file.read((char*)&result, sizeof(int));
-		this->worldX = (int)result;
-		my_file.read((char*)&result, sizeof(int));
-		this->worldY = (int)result;
-		my_file.read((char*)&result, sizeof(int));
-		this->turn = (int)result;
-		my_file.read((char*)&result, sizeof(int));
-		int orgs_size = (int)result;
-		vector<Organism> new_organisms;
-		for (int i = 0; i < orgs_size; i++) {
-			int power;
-			my_file.read((char*)&result, sizeof(int));
-			power = (int)result;
-
-			int health;
-			my_file.read((char*)&result, sizeof(int));
-			health = (int)result;
-
-			int maxHealth;
-			my_file.read((char*)&result, sizeof(int));
-			maxHealth = (int)result;
-
-			int pos_x;
-			my_file.read((char*)&result, sizeof(int));
-			pos_x = (int)result;
-			int pos_y;
-			my_file.read((char*)&result, sizeof(int));
-			pos_y = (int)result;
-			Position pos{ pos_x, pos_y };
-
-			int s_size;
-			my_file.read((char*)&result, sizeof(int));
-			s_size = (int)result;
-
-			string species;
-			species.resize(s_size);
-			my_file.read((char*)&species[0], s_size);
-
-			Organism org(power, health, pos, this->turn);
-			org.setMaxHealth(maxHealth);
-			org.setSpecies(species);
-			new_organisms.push_back(org);
-		}
-		this->organisms = new_organisms;
-		my_file.close();
-	}
+		[](Organism* org) { return org->getHealth() <= 0; }), organisms.end());
 }
 
 void World::printOrganismsInfo() // New method to print organisms info
 {
 	std::cout << "Organisms Info:\n";
 	for (auto& org : organisms) {
-		std::cout << org.toString() << "\n";
+		std::cout << org->toString() << "\n";
 	}
 }
 
@@ -274,4 +191,7 @@ string World::toString()
 		result += "\n";
 	}
 	return result;
+}
+
+World::~World() {
 }

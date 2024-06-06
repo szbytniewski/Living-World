@@ -2,14 +2,9 @@
 
 int Organism::nextId = 0;
 
-Organism::Organism(int power, int health, int maxHealth, Position position, int birthTurn, string species) : id(nextId++)
+Organism::Organism(int power, int health, int maxHealth, Position position, int birthTurn, string species)
+	: id(nextId++), power(power), health(health), maxHealth(maxHealth), position(position), species(species), birthTurn(birthTurn)
 {
-	setPower(power);
-	setHealth(health);
-	setMaxHealth(health + 2);
-	setPosition(position);
-	setSpecies("O");
-	setBirthTurn(birthTurn);
 }
 
 int Organism::getId() const 
@@ -58,6 +53,10 @@ void Organism::setPosition(Position position)
 }
 
 vector<AncestorInfo>& Organism::getAncestors() {
+	return this->ancestors;
+}
+
+const vector<AncestorInfo>& Organism::getAncestors() const {
 	return this->ancestors;
 }
 

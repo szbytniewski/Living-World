@@ -129,19 +129,27 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Animal.cpp" />
+    <ClCompile Include="Dandelion.cpp" />
+    <ClCompile Include="Grass.cpp" />
     <ClCompile Include="Living-World.cpp" />
     <ClCompile Include="Organism.cpp" />
     <ClCompile Include="Plant.cpp" />
     <ClCompile Include="Position.cpp" />
     <ClCompile Include="Sheep.cpp" />
+    <ClCompile Include="Toadstool.cpp" />
+    <ClCompile Include="Wolf.cpp" />
     <ClCompile Include="World.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Animal.h" />
+    <ClInclude Include="Dandelion.h" />
+    <ClInclude Include="Grass.h" />
     <ClInclude Include="Organism.h" />
     <ClInclude Include="Plant.h" />
     <ClInclude Include="Position.h" />
     <ClInclude Include="Sheep.h" />
+    <ClInclude Include="Toadstool.h" />
+    <ClInclude Include="Wolf.h" />
     <ClInclude Include="World.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
