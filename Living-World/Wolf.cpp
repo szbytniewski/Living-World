@@ -31,11 +31,12 @@ void Wolf::attack(Organism& target) {
         else {
             sheep->setHealth(targetHealth);
         }
-    } else if (Toadstool* toadstool = dynamic_cast<Toadstool*>(&target)) {
-        target.setHealth(target.getHealth() - getPower());
-        if (target.getHealth() <= 0) {
+    } else if (Plant* plant = dynamic_cast<Plant*>(&target)) {
+        if (plant->getSpecies() == "T") {
+            // Both attacker and Toadstool die
             this->setHealth(0);
+            plant->setHealth(0);
+            plant->updateAncestorDeathTurn(plant->getId(), 1);
         }
-        cout << "test";
     }
 }

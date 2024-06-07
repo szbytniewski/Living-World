@@ -5,3 +5,6 @@ Plant::Plant(int power, int health, int maxHealth, Position position, int birthT
 {
 }
 
+void Plant::move(int dx, int dy) {
+	// Plants do not move
+}

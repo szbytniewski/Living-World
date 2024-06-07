@@ -1,7 +1,7 @@
 #include "Toadstool.h"
 
 Toadstool::Toadstool(Position position, int birthTurn)
-    : Plant(0, 1, 1, position, birthTurn, "T") {}
+    : Plant(0, 1, 4, position, birthTurn, "T") {}
 
 bool Toadstool::canReproduce() const {
     return getHealth() == getMaxHealth();

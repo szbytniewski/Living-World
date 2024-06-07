@@ -15,4 +15,7 @@ public:
 
 	bool canAttack() const override = 0;
 	void attack(Organism& target) override = 0;
+
+
+	void move(int dx, int dy) override;
 };

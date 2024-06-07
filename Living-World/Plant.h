@@ -14,7 +14,5 @@ public:
 	virtual bool canAttack() const override = 0;
 	virtual void attack(Organism& target) override = 0;
 
-	void move(int dx, int dy) override {
-		// Plants do not move
-	}
+	void move(int dx, int dy) override;
 };

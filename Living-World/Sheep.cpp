@@ -35,19 +35,23 @@ bool Sheep::canAttack() const {
 
 void Sheep::attack(Organism& target) {
     if (Plant* plant = dynamic_cast<Plant*>(&target)) {
-        int targetHealth = plant->getHealth();
-        targetHealth -= getPower();
-        if (targetHealth <= 0) {
+        if (plant->getSpecies() == "T") {
+            // Both attacker and Toadstool die
+            this->setHealth(0);
             plant->setHealth(0);
             plant->updateAncestorDeathTurn(plant->getId(), 1);
         }
         else {
-            plant->setHealth(targetHealth);
-        }
-    } else if (Toadstool* toadstool = dynamic_cast<Toadstool*>(&target)) {
-        target.setHealth(target.getHealth() - getPower());
-        if (target.getHealth() <= 0) {
-            this->setHealth(0);
+            // Attack other plants
+            int targetHealth = plant->getHealth();
+            targetHealth -= getPower();
+            if (targetHealth <= 0) {
+                plant->setHealth(0);
+                plant->updateAncestorDeathTurn(plant->getId(), 1);
+            }
+            else {
+                plant->setHealth(targetHealth);
+            }
         }
     }
 }

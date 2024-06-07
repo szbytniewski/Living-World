@@ -126,17 +126,19 @@ void World::makeTurn()
 			Organism* child = org->createChild(turn);
 			newOrganisms.push_back(child);
 			org->setHealth(1);
+
+			newPositions = getVectorOfFreePositionsAround(child->getPosition());
+			numberOfNewPositions = newPositions.size();
+			if (newPositions.empty()) {
+				child->setHealth(0);
+			}
+			if (numberOfNewPositions > 0) {
+				randomIndex = rand() % numberOfNewPositions;
+				child->setPosition(newPositions[randomIndex]);
+			}
 		} else {
 			//Regenerate Health
 			org->regenerateHealth();
-
-			//Move Organism
-			newPositions = getVectorOfFreePositionsAround(org->getPosition());
-			numberOfNewPositions = newPositions.size();
-			if (numberOfNewPositions > 0) {
-				randomIndex = rand() % numberOfNewPositions;
-				org->setPosition(newPositions[randomIndex]);
-			}
 
 			vector<Organism*> adjacentOrganisms = getAdjacentOrganisms(org->getPosition());
 			for (auto& target : adjacentOrganisms) {
@@ -148,6 +150,16 @@ void World::makeTurn()
 					}
 				}
 			}
+
+			//Move Organism
+			newPositions = getVectorOfFreePositionsAround(org->getPosition());
+			numberOfNewPositions = newPositions.size();
+			if (numberOfNewPositions > 0) {
+				randomIndex = rand() % numberOfNewPositions;
+				org->setPosition(newPositions[randomIndex]);
+			}
+
+			
 		}
 		
 		// Check if organism is dead

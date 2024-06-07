@@ -23,10 +23,12 @@ private:
 	int power;
 	int health;
 	int maxHealth;
-	Position position;
 	string species;
 	int birthTurn;
 	vector<AncestorInfo> ancestors;
+
+protected:
+	Position position;
 
 public:
 	
@@ -64,5 +66,5 @@ public:
 
 	string toString();
 
-	virtual void move(int dx, int dy);
+	virtual void move(int dx, int dy) = 0;
 };

@@ -1,7 +1,7 @@
 #include "Grass.h"
 
 Grass::Grass(Position position, int birthTurn)
-    : Plant(0, 1, 2, position, birthTurn, "G") 
+    : Plant(0, 1, 1, position, birthTurn, "G") 
 {
 }
 
@@ -30,3 +30,4 @@ bool Grass::canAttack() const {
 void Grass::attack(Organism& target) {
     
 }
+
